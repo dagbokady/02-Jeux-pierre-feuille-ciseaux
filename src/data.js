@@ -3,15 +3,15 @@ const data = {
     {
       "name": "cisors",
       "beat": "paper",
-      "img": "link"
+      "img": "../public/cisors.avif"
     },{
       "name": "paper",
       "beat": "rock",
-      "img": "link"
+      "img": "../public/paper.avif"
     },{
       "name": "rock",
       "beat": "cisors",
-      "img": "link"
+      "img": "../public/rocher.avif"
     }
   ]
 }

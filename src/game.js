@@ -2,7 +2,7 @@ import data from './data.js'
 
 const table = [...data.elements]
 
-function game (first,second) {
+function gameCompare (first,second) {
     let firstbeat = table.find((elt) => elt.name === first).beat
     let secondbeat = table.find((elt) => elt.name === second).beat
     if (first === second) {
@@ -14,4 +14,8 @@ function game (first,second) {
         console.log(second,"beat",first)
     }
 }
-game("paper","cisors")
+export default gameCompare;
+
+export function getElements() {
+    return [...data.elements]
+}
