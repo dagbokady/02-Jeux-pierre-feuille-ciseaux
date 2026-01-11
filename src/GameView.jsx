@@ -1,7 +1,16 @@
 import {NavLink} from "react-router";
 import {getElements} from "./game.js";
+import {useState} from "react";
 
 export default function GameView() {
+    let [selected, setSelected] = useState(null)
+    let [score, setScore] = useState(null)
+    setScore({"robot":0,"player":0})
+   /* function handleResult(playerChoice) {
+        let robotChoice =robotPlay()
+        gameCompare(playerChoice, robotChoice)
+    }*/
+
     const list = getElements();
     return (
         <>
@@ -19,14 +28,14 @@ export default function GameView() {
                             Score
                         </h2>
                         <div className="text-xl font-semibold text-gray-800 mt-2">
-                            0 - 0
+                            {score.robot} - {score.player}
                         </div>
                     </div>
                    <div className="h-2/10 w-full flex justify-evenly items-center">
                        <h5>ROBOT 🤖 :</h5>
                        {list.map((item, index) =><button
-                           key={index}
-                           className=" w-auto h-auto rounded-2xl shadow-lg p-4 flex flex-col items-center justify-center bg-white hover:shadow-xl transition-all duration-300 hover:scale-105 hover:border-2 hover:border-blue-400"
+                           key={index + 3}
+                           className=" w-auto h-auto rounded-2xl shadow-lg p-4 flex flex-col items-center justify-center bg-white "
                        >
                            <img
                                src={item.img}
@@ -47,7 +56,10 @@ export default function GameView() {
                             <h5>YOU 👨🏾‍🦱 :</h5>
                         {list.map((item, index) =><button
                             key={index}
-                            className=" w-auto h-auto rounded-2xl shadow-lg p-4 flex flex-col items-center justify-center bg-white hover:shadow-xl transition-all duration-300 hover:scale-105 hover:border-2 hover:border-blue-400"
+                            onClick={() => {
+                                setSelected({"index": index});
+                            }}
+                            className={index === selected.index ? "w-auto h-auto rounded-2xl shadow-lg p-4 flex flex-col items-center justify-center  transition-all duration-300 scale-105 border-2 border-blue-400" : " w-auto h-auto rounded-2xl shadow-lg p-4 flex flex-col items-center justify-center bg-white hover:shadow-xl transition-all duration-300 hover:scale-105 hover:border-2 hover:border-blue-400"}
                         >
                             <img
                                 src={item.img}

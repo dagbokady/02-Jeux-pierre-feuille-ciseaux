@@ -6,16 +6,21 @@ function gameCompare (first,second) {
     let firstbeat = table.find((elt) => elt.name === first).beat
     let secondbeat = table.find((elt) => elt.name === second).beat
     if (first === second) {
-        console.log("draw")
-
+        return null
     }else if (second === firstbeat) {
-        console.log(first,"beat", second)
+        return first
+
     }else if (first === secondbeat) {
-        console.log(second,"beat",first)
+        return second
     }
 }
 export default gameCompare;
 
 export function getElements() {
     return [...data.elements]
+}
+
+export function robotPlay(){
+    let choice = Math.floor(Math.random()*3)
+    return table[choice].name
 }
