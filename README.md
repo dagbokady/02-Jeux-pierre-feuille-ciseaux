@@ -147,7 +147,7 @@ Ce projet est libre de réutilisation et modification.
 ## 🎇 Image de l'application
 
 
-![image](public/Capture-01.png)
+![image](public/img.png)
 
 ![image du projet](public/Capture-02.png)
 
