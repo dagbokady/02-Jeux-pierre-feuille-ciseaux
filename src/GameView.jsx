@@ -1,16 +1,44 @@
 import {NavLink} from "react-router";
-import {getElements} from "./game.js";
+import {gameCompare, getElements, robotPlay} from "./game.js";
 import {useState} from "react";
 
-export default function GameView() {
-    let [selected, setSelected] = useState(null)
-    let [score, setScore] = useState(null)
-    setScore({"robot":0,"player":0})
-   /* function handleResult(playerChoice) {
-        let robotChoice =robotPlay()
-        gameCompare(playerChoice, robotChoice)
-    }*/
 
+export default function GameView() {
+    let [selected, setSelected] = useState({})
+    let [robotChoice, setRobotChoice] = useState({choice:null})
+    let [score, setScore] = useState({robot:0,player:0});
+    let [isLoading, setIsLoading] = useState(false);
+
+    async function handleResult(selected) {
+
+        setIsLoading(true);
+        try{
+            let robot = await robotPlay()
+            setRobotChoice(robot)
+            let result = await gameCompare(selected, robot.name)
+            switch (result) {
+                case null:
+                    console.log("draw");
+                    break;
+                case selected:
+                    console.log("Player win with: " + result);
+                    setScore((prev)=>({...prev, player:score.player+1}));
+                    break;
+                case robot.name :
+                    console.log ("Robot win with: " + robot);
+                    setScore((prev)=>({...prev, robot:score.robot+1}));
+                    break;
+            }
+        }catch(err){
+            console.log(err)
+        }finally {
+            setIsLoading(false);
+        }
+    }
+    function handlePlayerChoice(item, index) {
+        setSelected({index, ...item});
+        handleResult(item.name);
+    }
     const list = getElements();
     return (
         <>
@@ -27,15 +55,25 @@ export default function GameView() {
                         <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                             Score
                         </h2>
-                        <div className="text-xl font-semibold text-gray-800 mt-2">
-                            {score.robot} - {score.player}
+                        <div className="text-3xl font-semibold text-gray-800 mt-2">
+                            🤖 {score.robot} - {score.player} 👨🏾‍🦱
                         </div>
                     </div>
+
+
+
+
+
+
                    <div className="h-2/10 w-full flex justify-evenly items-center">
-                       <h5>ROBOT 🤖 :</h5>
+                       <h5 className=" font-bold ">ROBOT 🤖 :</h5>
                        {list.map((item, index) =><button
                            key={index + 3}
-                           className=" w-auto h-auto rounded-2xl shadow-lg p-4 flex flex-col items-center justify-center bg-white "
+                           className={`w-auto h-auto rounded-2xl p-3 flex flex-col items-center justify-center transition-all duration-300 ${
+                               robotChoice?.name === item.name
+                                   ? 'bg-gradient-to-br from-red-100 to-red-200 border-4 border-red-400 scale-110 shadow-xl'
+                                   : 'bg-white shadow-lg opacity-70'
+                           }`}
                        >
                            <img
                                src={item.img}
@@ -45,21 +83,56 @@ export default function GameView() {
                            <h6 className="text-sm font-medium text-gray-700 group-hover:text-blue-600">
                                {item.name}
                            </h6>
+
                        </button>)}
                    </div>
+                    {isLoading && (
+                        <div className="text-center mt-2 text-gray-500">
+                            Robot is thinking...
+                        </div>
+                    )}
+
+
+
+
+
                         <div className="w-full h-4/10 my-3 bg-gradient-to-r from-blue-50 to-purple-50  shadow-inner border-2 border-gray-200 flex items-center justify-center">
-                            <div className="inset-0 flex items-center justify-center">
-                                <span className="text-4xl">⚔️</span>
+                            <div className="inset-0 flex items-center justify-evenly flex-col h-full">
+                                {selected && robotChoice ? (
+                                    <>
+                                        <p className="text-2xl font-semibold text-red-400 mt-2">
+                                            {robotChoice.name}
+                                        </p>
+                                        <div className="text-4xl animate-pulse">⚔️</div>
+                                        <p className="text-2xl font-semibold text-blue-400 mt-2">
+                                           {selected.name}
+                                        </p>
+                                    </>
+                                ) : (
+                                    <>
+                                        <span className="text-4xl">🎮</span>
+                                        <p className="text-lg font-semibold text-gray-600 mt-2">
+                                            Make your move!
+                                        </p>
+                                    </>
+                                )}
                             </div>
                         </div>
+
+
+
+
+
+
+
+
+
                     <div className="h-2/10 w-full flex justify-evenly items-center">
-                            <h5>YOU 👨🏾‍🦱 :</h5>
+                            <h5 className=" font-bold ">YOU 👨🏾‍🦱 :</h5>
                         {list.map((item, index) =><button
                             key={index}
-                            onClick={() => {
-                                setSelected({"index": index});
-                            }}
-                            className={index === selected.index ? "w-auto h-auto rounded-2xl shadow-lg p-4 flex flex-col items-center justify-center  transition-all duration-300 scale-105 border-2 border-blue-400" : " w-auto h-auto rounded-2xl shadow-lg p-4 flex flex-col items-center justify-center bg-white hover:shadow-xl transition-all duration-300 hover:scale-105 hover:border-2 hover:border-blue-400"}
+                            onClick={()=>handlePlayerChoice(item, index)}
+                            className={ index === selected.index ? "w-auto h-auto rounded-2xl shadow-lg p-4 flex flex-col items-center justify-center  transition-all duration-300  bg-gradient-to-br  from-blue-100 to-blue-200 border-4 border-blue-400 scale-110" : " w-auto h-auto rounded-2xl shadow-lg p-4 flex flex-col items-center justify-center bg-white hover:shadow-xl transition-all duration-300 hover:scale-105 hover:border-2 hover:border-blue-400"}
                         >
                             <img
                                 src={item.img}
